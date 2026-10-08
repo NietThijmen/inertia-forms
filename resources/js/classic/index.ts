@@ -1,14 +1,30 @@
 import type { FormPayload } from '../contract';
-import { errorList } from '../shared/names';
-import { getValue } from '../shared/values';
+import { errorList, fieldDomId, getValue, setValue, type FieldProps } from '../core';
 import { defaultRenderers, renderField } from './fields';
 import { applyCsrfToken, applyNativeMethod, resolveRouter, submitWithInertia } from './submit';
 import type { ClassicFormHandle, FieldRenderer, MountClassicFormOptions } from './types';
 
-export type { ClassicFormHandle, FieldRenderContext, FieldRenderer, MountClassicFormOptions, RouterLike } from './types';
+export type { ClassicFormHandle, FieldProps, FieldRenderContext, FieldRenderer, MountClassicFormOptions, RouterLike } from './types';
 export { defaultRenderers, renderField, resolveRenderer } from './fields';
-export { getValue, setValue } from '../shared/values';
-export { fieldDomId } from '../shared/names';
+export { fieldDomId, getValue, setValue };
+
+function fieldErrors(errors: Record<string, string | string[]> | undefined): Record<string, string> {
+	if (!errors) {
+		return {};
+	}
+
+	const normalized: Record<string, string> = {};
+
+	for (const name of Object.keys(errors)) {
+		const message = errorList(errors, name)[0];
+
+		if (message) {
+			normalized[name] = message;
+		}
+	}
+
+	return normalized;
+}
 
 export function mountClassicForm(
 	target: Element,
@@ -57,21 +73,19 @@ export function mountClassicForm(
 	target.replaceChildren(form);
 
 	const renderers = { ...defaultRenderers(), ...options.renderers };
+	const errors = fieldErrors(options.errors);
 	let processing = false;
 
 	for (const field of payload.fields) {
-		fieldsRoot.appendChild(
-			renderField(
-				{
-					field,
-					value: getValue(payload.values, field.name),
-					errors: errorList(options.errors, field.name),
-					processing: false,
-					formId: payload.id,
-				},
-				renderers,
-			),
-		);
+		const props: FieldProps = {
+			field,
+			value: getValue(payload.values, field.name),
+			errors,
+			processing: false,
+			formId: payload.id,
+		};
+
+		fieldsRoot.appendChild(renderField(props, renderers));
 	}
 
 	const applyErrors = (errors: Record<string, string | string[]>): void => {

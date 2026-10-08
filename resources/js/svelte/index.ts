@@ -7,7 +7,6 @@ export { default as CheckboxField } from './fields/CheckboxField.svelte';
 export { default as SelectField } from './fields/SelectField.svelte';
 export { default as RadioField } from './fields/RadioField.svelte';
 export { default as FileField } from './fields/FileField.svelte';
-export { getValue, setValue } from '../shared/values';
-export { fieldDomId } from '../shared/names';
+export { fieldDomId, getValue, setValue } from '../core';
 export type { FieldComponent, FieldProps, FieldRendererMap, FormRenderContext, InertiaFormState } from './types';
 export type { FieldPayload, FormPayload, JsonValue } from '../contract';

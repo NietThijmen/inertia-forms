@@ -1,25 +1,19 @@
 import type { FieldPayload } from '../contract';
-import { asRecord, describedBy, fieldDomId } from '../shared/names';
-import { inputValue, isChecked } from '../shared/values';
-import type { FieldRenderContext, FieldRenderer } from './types';
+import {
+	asRecord,
+	describedBy,
+	errorList,
+	fieldDomId,
+	inputValue,
+	isChecked,
+	resolveComponent,
+	type ComponentMap,
+	type FieldProps,
+} from '../core';
+import type { FieldRenderer } from './types';
 
-const BUILTIN_TYPES = [
-	'text',
-	'email',
-	'password',
-	'number',
-	'date',
-	'textarea',
-	'checkbox',
-	'select',
-	'radio',
-	'file',
-] as const;
-
-type BuiltinType = (typeof BUILTIN_TYPES)[number];
-
-function isBuiltin(type: string): type is BuiltinType {
-	return (BUILTIN_TYPES as readonly string[]).includes(type);
+function messageFor(errors: Record<string, string>, name: string): string {
+	return errorList(errors, name)[0] ?? '';
 }
 
 function applyAttributes(element: HTMLElement, field: FieldPayload): void {
@@ -37,9 +31,10 @@ function applyAttributes(element: HTMLElement, field: FieldPayload): void {
 	}
 }
 
-function wrapField(context: FieldRenderContext, control: HTMLElement | DocumentFragment): HTMLElement {
+function wrapField(context: FieldProps, control: HTMLElement | DocumentFragment): HTMLElement {
 	const { field, errors, formId } = context;
 	const id = fieldDomId(formId, field.name);
+	const message = messageFor(errors, field.name);
 	const wrapper = document.createElement('div');
 	wrapper.className = 'if-field';
 	wrapper.dataset.field = field.name;
@@ -66,8 +61,8 @@ function wrapField(context: FieldRenderContext, control: HTMLElement | DocumentF
 	error.id = `${id}-error`;
 	error.className = 'if-error';
 	error.setAttribute('role', 'alert');
-	error.hidden = errors.length === 0;
-	error.textContent = errors[0] ?? '';
+	error.hidden = message === '';
+	error.textContent = message;
 	wrapper.appendChild(error);
 
 	return wrapper;
@@ -78,6 +73,7 @@ function inputRenderer(htmlType: string): FieldRenderer {
 		const { field, value, errors, processing, formId } = context;
 		const input = document.createElement('input');
 		const id = fieldDomId(formId, field.name);
+		const message = messageFor(errors, field.name);
 
 		input.type = htmlType;
 		input.id = id;
@@ -97,12 +93,12 @@ function inputRenderer(htmlType: string): FieldRenderer {
 			input.placeholder = field.placeholder;
 		}
 
-		const described = describedBy(field, formId, errors.length > 0);
+		const described = describedBy(field, formId, message !== '');
 		if (described) {
 			input.setAttribute('aria-describedby', described);
 		}
 
-		if (errors.length > 0) {
+		if (message !== '') {
 			input.setAttribute('aria-invalid', 'true');
 		}
 
@@ -112,10 +108,11 @@ function inputRenderer(htmlType: string): FieldRenderer {
 	};
 }
 
-function textareaRenderer(context: FieldRenderContext): HTMLElement {
+function textareaRenderer(context: FieldProps): HTMLElement {
 	const { field, value, errors, processing, formId } = context;
 	const textarea = document.createElement('textarea');
 	const id = fieldDomId(formId, field.name);
+	const message = messageFor(errors, field.name);
 
 	textarea.id = id;
 	textarea.name = field.htmlName;
@@ -128,12 +125,12 @@ function textareaRenderer(context: FieldRenderContext): HTMLElement {
 		textarea.placeholder = field.placeholder;
 	}
 
-	const described = describedBy(field, formId, errors.length > 0);
+	const described = describedBy(field, formId, message !== '');
 	if (described) {
 		textarea.setAttribute('aria-describedby', described);
 	}
 
-	if (errors.length > 0) {
+	if (message !== '') {
 		textarea.setAttribute('aria-invalid', 'true');
 	}
 
@@ -142,7 +139,7 @@ function textareaRenderer(context: FieldRenderContext): HTMLElement {
 	return wrapField(context, textarea);
 }
 
-function checkboxRenderer(context: FieldRenderContext): HTMLElement {
+function checkboxRenderer(context: FieldProps): HTMLElement {
 	const { field, value, processing, formId } = context;
 	const id = fieldDomId(formId, field.name);
 	const fragment = document.createDocumentFragment();
@@ -174,10 +171,11 @@ function checkboxRenderer(context: FieldRenderContext): HTMLElement {
 	return wrapField(context, fragment);
 }
 
-function selectRenderer(context: FieldRenderContext): HTMLElement {
+function selectRenderer(context: FieldProps): HTMLElement {
 	const { field, value, errors, processing, formId } = context;
 	const select = document.createElement('select');
 	const id = fieldDomId(formId, field.name);
+	const message = messageFor(errors, field.name);
 
 	select.id = id;
 	select.name = field.multiple ? `${field.htmlName}[]` : field.htmlName;
@@ -205,12 +203,12 @@ function selectRenderer(context: FieldRenderContext): HTMLElement {
 		select.appendChild(option);
 	}
 
-	const described = describedBy(field, formId, errors.length > 0);
+	const described = describedBy(field, formId, message !== '');
 	if (described) {
 		select.setAttribute('aria-describedby', described);
 	}
 
-	if (errors.length > 0) {
+	if (message !== '') {
 		select.setAttribute('aria-invalid', 'true');
 	}
 
@@ -219,7 +217,7 @@ function selectRenderer(context: FieldRenderContext): HTMLElement {
 	return wrapField(context, select);
 }
 
-function radioRenderer(context: FieldRenderContext): HTMLElement {
+function radioRenderer(context: FieldProps): HTMLElement {
 	const { field, value, processing, formId } = context;
 	const group = document.createElement('div');
 	group.setAttribute('role', 'radiogroup');
@@ -246,10 +244,11 @@ function radioRenderer(context: FieldRenderContext): HTMLElement {
 	return wrapField(context, group);
 }
 
-function fileRenderer(context: FieldRenderContext): HTMLElement {
+function fileRenderer(context: FieldProps): HTMLElement {
 	const { field, errors, processing, formId } = context;
 	const input = document.createElement('input');
 	const id = fieldDomId(formId, field.name);
+	const message = messageFor(errors, field.name);
 
 	input.type = 'file';
 	input.id = id;
@@ -262,12 +261,12 @@ function fileRenderer(context: FieldRenderContext): HTMLElement {
 		input.accept = field.accept;
 	}
 
-	const described = describedBy(field, formId, errors.length > 0);
+	const described = describedBy(field, formId, message !== '');
 	if (described) {
 		input.setAttribute('aria-describedby', described);
 	}
 
-	if (errors.length > 0) {
+	if (message !== '') {
 		input.setAttribute('aria-invalid', 'true');
 	}
 
@@ -276,7 +275,9 @@ function fileRenderer(context: FieldRenderContext): HTMLElement {
 	return wrapField(context, input);
 }
 
-const builtins: Record<BuiltinType, FieldRenderer> = {
+const textFallback = inputRenderer('text');
+
+const builtins: Record<string, FieldRenderer> = {
 	text: inputRenderer('text'),
 	email: inputRenderer('email'),
 	password: inputRenderer('password'),
@@ -295,22 +296,14 @@ export function defaultRenderers(): Record<string, FieldRenderer> {
 
 export function resolveRenderer(
 	type: string,
-	overrides: Record<string, FieldRenderer> = {},
+	overrides: ComponentMap<FieldRenderer> = {},
 ): FieldRenderer {
-	if (overrides[type]) {
-		return overrides[type];
-	}
-
-	if (isBuiltin(type)) {
-		return builtins[type];
-	}
-
-	return inputRenderer('text');
+	return resolveComponent(type, overrides, builtins, textFallback);
 }
 
 export function renderField(
-	context: FieldRenderContext,
-	overrides: Record<string, FieldRenderer> = {},
+	context: FieldProps,
+	overrides: ComponentMap<FieldRenderer> = {},
 ): HTMLElement {
 	return resolveRenderer(context.field.type, overrides)(context);
 }

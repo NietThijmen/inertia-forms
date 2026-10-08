@@ -10,6 +10,7 @@ export default defineConfig({
 			entry: {
 				classic: fileURLToPath(new URL('./resources/js/classic/index.ts', import.meta.url)),
 				contract: fileURLToPath(new URL('./resources/js/contract.ts', import.meta.url)),
+				core: fileURLToPath(new URL('./resources/js/core/index.ts', import.meta.url)),
 			},
 			formats: ['es'],
 		},

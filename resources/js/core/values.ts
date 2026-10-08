@@ -1,4 +1,4 @@
-import type { JsonValue } from '../contract';
+import type { JsonValue } from './contract';
 
 export function getValue(
 	values: Record<string, JsonValue>,

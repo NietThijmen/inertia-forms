@@ -48,6 +48,35 @@ describe('classic adapter', () => {
 		expect(handle.element.querySelector('input[name="name"]')).toHaveAttribute('aria-invalid', 'true');
 	});
 
+	it('passes an errors record to renderers', () => {
+		let received: Record<string, string> | undefined;
+
+		mountClassicForm(document.body, loadFixture(), {
+			errors: {
+				name: ['The name field is required.', 'ignored'],
+				email: 'Invalid email.',
+			},
+			renderers: {
+				text: (props) => {
+					if (props.field.name === 'name') {
+						received = props.errors;
+					}
+
+					const el = document.createElement('div');
+					el.dataset.custom = props.field.name;
+					el.textContent = props.errors[props.field.name] ?? '';
+					return el;
+				},
+			},
+		});
+
+		expect(received).toEqual({
+			name: 'The name field is required.',
+			email: 'Invalid email.',
+		});
+		expect(Array.isArray(received)).toBe(false);
+	});
+
 	it('allows renderer overrides and manual field rendering', () => {
 		const payload = loadFixture();
 		const handle = mountClassicForm(document.body, payload, {

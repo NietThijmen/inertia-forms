@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { asRecord } from '../../shared/names';
+	import { asRecord } from '../../core';
 	import type { FieldProps } from '../types';
 	import FieldShell from '../FieldShell.svelte';
 

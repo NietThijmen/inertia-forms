@@ -1,17 +1,12 @@
 import type { Component } from 'svelte';
-import type { FieldPayload, FormPayload, JsonValue } from '../contract';
+import type { ComponentMap, FieldProps } from '../core';
+import type { FormPayload } from '../contract';
 
-export type FieldProps = {
-	field: FieldPayload;
-	value: JsonValue | undefined;
-	errors: Record<string, string>;
-	processing: boolean;
-	formId: string;
-};
+export type { FieldProps };
 
 export type FieldComponent = Component<FieldProps>;
 
-export type FieldRendererMap = Record<string, FieldComponent>;
+export type FieldRendererMap = ComponentMap<FieldComponent>;
 
 export type InertiaFormState = {
 	errors: Record<string, string>;

@@ -1,4 +1,4 @@
-import type { FieldPayload } from '../contract';
+import type { FieldPayload } from './contract';
 
 export function fieldDomId(formId: string, name: string): string {
 	return `if-${formId}-${name.replace(/[^a-zA-Z0-9_-]+/g, '-')}`;
