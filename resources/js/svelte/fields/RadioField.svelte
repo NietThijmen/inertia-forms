@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fieldDomId } from '../../shared/names';
+	import { fieldDomId } from '../../core';
 	import type { FieldProps } from '../types';
 	import FieldShell from '../FieldShell.svelte';
 

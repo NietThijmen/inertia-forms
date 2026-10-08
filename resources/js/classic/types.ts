@@ -1,14 +1,11 @@
-import type { FieldPayload, FormPayload, JsonValue } from '../contract';
+import type { FieldProps } from '../core';
+import type { FormPayload } from '../contract';
 
-export type FieldRenderContext = {
-	field: FieldPayload;
-	value: JsonValue | undefined;
-	errors: string[];
-	processing: boolean;
-	formId: string;
-};
+export type { FieldProps };
 
-export type FieldRenderer = (context: FieldRenderContext) => HTMLElement;
+export type FieldRenderContext = FieldProps;
+
+export type FieldRenderer = (context: FieldProps) => HTMLElement;
 
 export type RouterLike = {
 	visit: (

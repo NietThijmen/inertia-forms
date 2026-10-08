@@ -3,7 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { FIELD_PAYLOAD_KEYS, FORM_PAYLOAD_KEYS, type FormPayload } from '../../../resources/js/contract';
-import { getValue } from '../../../resources/js/shared/values';
+import { getValue } from '../../../resources/js/core';
 
 const fixturePath = resolve(dirname(fileURLToPath(import.meta.url)), '../../Fixtures/form-payload.json');
 

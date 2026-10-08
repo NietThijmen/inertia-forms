@@ -7,6 +7,8 @@ import type { FormPayload } from '../../../resources/js/contract';
 import Form from '../../../resources/js/svelte/Form.svelte';
 import Field from '../../../resources/js/svelte/Field.svelte';
 import OverrideDemo from './OverrideDemo.svelte';
+import EmailOverride from './EmailOverride.svelte';
+import EmailRenderer from './EmailRenderer.svelte';
 
 const fixturePath = resolve(dirname(fileURLToPath(import.meta.url)), '../../Fixtures/form-payload.json');
 
@@ -57,6 +59,28 @@ describe('svelte adapter', () => {
 		});
 
 		expect(screen.getByLabelText('Email')).toBeDisabled();
+	});
+
+	it('replaces a built-in field when components.email is set', () => {
+		const payload = loadFixture();
+
+		render(Form, {
+			payload,
+			errors: { email: 'Invalid email.' },
+			processing: true,
+			renderers: { email: EmailRenderer },
+			components: { email: EmailOverride },
+		});
+
+		const custom = screen.getByTestId('custom-email');
+		expect(custom).toHaveTextContent('Email');
+		expect(custom).toHaveAttribute('data-value', 'jane@example.com');
+		expect(custom).toHaveAttribute('data-form-id', payload.id);
+		expect(custom).toHaveAttribute('data-processing', 'true');
+		expect(custom).toHaveAttribute('data-error', 'Invalid email.');
+		expect(screen.queryByTestId('renderer-email')).not.toBeInTheDocument();
+		expect(document.querySelector('input[name="email"]')).toBeNull();
+		expect(screen.getByLabelText('Name')).toBeInTheDocument();
 	});
 
 	it('supports consumer field overrides', () => {

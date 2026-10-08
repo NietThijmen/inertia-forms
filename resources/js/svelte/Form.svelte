@@ -2,12 +2,13 @@
 	import { Form as InertiaForm } from '@inertiajs/svelte';
 	import type { Snippet } from 'svelte';
 	import type { FieldPayload, FormPayload, JsonValue } from '../contract';
-	import { getValue } from '../shared/values';
+	import { getValue } from '../core';
 	import Field from './Field.svelte';
 	import type { FieldRendererMap, FormRenderContext, InertiaFormState } from './types';
 
 	type Props = {
 		payload: FormPayload;
+		components?: FieldRendererMap;
 		renderers?: FieldRendererMap;
 		submitLabel?: string;
 		children?: Snippet<[FormRenderContext]>;
@@ -19,12 +20,15 @@
 
 	let {
 		payload,
+		components = {},
 		renderers = {},
 		submitLabel = 'Submit',
 		children: manual,
 		field: fieldSnippet,
 		...inertiaProps
 	}: Props = $props();
+
+	let mergedRenderers = $derived({ ...renderers, ...components });
 
 	type InertiaMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
@@ -74,7 +78,7 @@
 						errors={formState.errors}
 						processing={formState.processing}
 						formId={payload.id}
-						{renderers}
+						renderers={mergedRenderers}
 					/>
 				{/if}
 			{/each}

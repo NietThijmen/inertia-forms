@@ -1,13 +1,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import type { FieldPayload } from '../contract';
-	import { describedBy, fieldDomId } from '../shared/names';
+	import { describedBy, fieldDomId, type FieldShellProps } from '../core';
 
-	type Props = {
-		field: FieldPayload;
-		formId: string;
-		errors: Record<string, string>;
-		hideLabel?: boolean;
+	type Props = FieldShellProps & {
 		children: Snippet<[string, string | undefined]>;
 	};
 

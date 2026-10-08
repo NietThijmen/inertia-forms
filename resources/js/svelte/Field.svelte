@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Component } from 'svelte';
-	import type { FieldProps, FieldRendererMap } from './types';
+	import { resolveComponent, type ComponentMap } from '../core';
+	import type { FieldComponent, FieldProps, FieldRendererMap } from './types';
 	import InputField from './fields/InputField.svelte';
 	import TextareaField from './fields/TextareaField.svelte';
 	import CheckboxField from './fields/CheckboxField.svelte';
@@ -15,7 +15,7 @@
 
 	let { renderers = {}, ...props }: Props = $props();
 
-	const builtins: Record<string, Component<FieldProps>> = {
+	const builtins: ComponentMap<FieldComponent> = {
 		text: InputField,
 		email: InputField,
 		password: InputField,
@@ -28,7 +28,7 @@
 		file: FileField,
 	};
 
-	let Renderer = $derived(renderers[props.field.type] ?? builtins[props.field.type] ?? FallbackField);
+	let Renderer = $derived(resolveComponent(props.field.type, renderers, builtins, FallbackField));
 </script>
 
 <Renderer {...props} />

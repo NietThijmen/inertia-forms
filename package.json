@@ -10,6 +10,11 @@
             "import": "./resources/js/contract.ts",
             "default": "./resources/js/contract.ts"
         },
+        "./core": {
+            "types": "./resources/js/core/index.ts",
+            "import": "./resources/js/core/index.ts",
+            "default": "./resources/js/core/index.ts"
+        },
         "./classic": {
             "types": "./resources/js/classic/index.ts",
             "import": "./resources/js/classic/index.ts",
@@ -40,6 +45,9 @@
             ],
             "contract": [
                 "resources/js/contract.ts"
+            ],
+            "core": [
+                "resources/js/core/index.ts"
             ]
         }
     },

@@ -2,7 +2,7 @@
 
 Class-based Laravel forms serialized into one JSON-safe contract, rendered by a Classic (HTML/JavaScript) adapter or a Svelte adapter for Inertia.js.
 
-This repository is a Composer package (`nietthijmen/inertia-forms`) plus an npm package (`@nietthijmen/inertia-forms`) with two frontend entry points. Persistence stays in the consuming application.
+This repository is a Composer package (`nietthijmen/inertia-forms`) plus an npm package (`@nietthijmen/inertia-forms`). Frontend entry points are `./contract`, `./core`, `./classic`, and `./svelte`. Persistence stays in the consuming application.
 
 **Classic** here means a framework-agnostic renderer built on semantic HTML and browser APIs. It is not a Vue/React adapter and does not require a CSS framework.
 
@@ -141,11 +141,12 @@ const handle = mountClassicForm(document.getElementById('profile-form'), payload
   submit: 'auto', // 'native' | 'inertia' | 'auto'
   submitLabel: 'Save',
   renderers: {
-    color: ({ field, value }) => {
+    color: ({ field, value, errors }) => {
       const input = document.createElement('input');
       input.type = 'color';
       input.name = field.htmlName;
       input.value = String(value ?? '#000000');
+      input.setAttribute('aria-invalid', errors[field.name] ? 'true' : 'false');
       return input;
     },
   },
@@ -162,6 +163,8 @@ Behavior:
 - Native submit uses a real HTML form. `PUT`/`PATCH`/`DELETE` are spoofed with `_method` and POST. A CSRF token is added from `meta[name="csrf-token"]` when present.
 - `submit: 'inertia'` (or `auto` when `window.Inertia` or `options.router` exists) intercepts submit and calls Inertia `router.visit` with `FormData`. Validation errors then come from Inertia’s `onError` callback / page reload — the same redirect-based flow Inertia already uses.
 - Native HTML submit is implemented and tested as “the browser posts `FormData` to `action`”. It is **not** claimed to complete an Inertia validation round-trip without JavaScript. Inertia responses require the Inertia client (or a classic Laravel non-Inertia redirect back).
+
+Each classic renderer receives `FieldProps`: `field`, `value`, `errors` (`Record<string, string>`), `processing`, and `formId`. `mountClassicForm({ errors })` still accepts a string or a list of strings per field and keeps the first message.
 
 Manual rendering: skip `mountClassicForm` and call `renderField({ field, value, errors, processing, formId })` for each field, or pass renderer overrides. See `examples/classic.js`.
 
@@ -193,7 +196,50 @@ The component wraps Inertia’s `<Form>` (`@inertiajs/svelte` v3 `Form` / `useFo
 </Form>
 ```
 
-Replace a type for the whole form:
+Replace a type for the whole form. `renderers` and `components` use the same field-component map. Keys in `components` win:
+
+```svelte
+<script lang="ts">
+	import { Form } from '@nietthijmen/inertia-forms/svelte';
+	import EmailNote from './EmailNote.svelte';
+	import MyMarkdown from './MyMarkdown.svelte';
+
+	let { form } = $props();
+</script>
+
+<Form payload={form} components={{ email: EmailNote }} renderers={{ textarea: MyMarkdown }} />
+```
+
+```svelte
+<script lang="ts">
+	import type { FieldProps } from '@nietthijmen/inertia-forms/svelte';
+
+	let { field, value, errors, processing, formId }: FieldProps = $props();
+</script>
+
+<p data-field={field.name} data-form={formId}>
+	{field.label}: {value}
+	{#if errors[field.name]}
+		<span role="alert">{errors[field.name]}</span>
+	{/if}
+	{#if processing}Saving…{/if}
+</p>
+```
+
+`FieldProps` and the framework-free helpers live in `@nietthijmen/inertia-forms/core`:
+
+```ts
+import {
+	getValue,
+	resolveComponent,
+	type FieldPayload,
+	type FieldProps,
+} from '@nietthijmen/inertia-forms/core';
+```
+
+React and Vue adapters are not included yet. They would render each field with the same `FieldProps` (`field`, `value`, `errors`, `processing`, `formId`).
+
+`renderers` replaces one type for the whole form:
 
 ```svelte
 <Form payload={form} renderers={{ textarea: MyMarkdown }} />

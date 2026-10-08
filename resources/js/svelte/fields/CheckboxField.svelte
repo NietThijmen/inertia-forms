@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { asRecord } from '../../shared/names';
-	import { isChecked } from '../../shared/values';
+	import { asRecord, isChecked } from '../../core';
 	import type { FieldProps } from '../types';
 	import FieldShell from '../FieldShell.svelte';
 
