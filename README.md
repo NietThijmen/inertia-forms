@@ -73,11 +73,11 @@ final class ProfileForm extends Form
 
 ### Built-in fields
 
-`TextField`, `EmailField`, `PasswordField`, `NumberField`, `DateField`, `TextareaField`, `CheckboxField`, `SelectField`, `RadioField`, `FileField`.
+`TextField`, `EmailField`, `PasswordField`, `NumberField`, `DateField`, `TextareaField`, `CheckboxField`, `SelectField`, `RadioField`, `FileField`, `SlugField`, `LinkField`, `HiddenField`, `OtpField`, `ComboboxField`, `CheckboxGroupField`, `ToggleField`, `TimeField`, `ColorField`, `SliderField`, `ComposerField`, `RichTextField`, `RepeaterField`, `BlocksField`, `KeyValueField`, `DisplayField`, `SubmitField`.
 
 Common metadata: `label()`, `description()`, `placeholder()`, `default()`, `required()`, `disabled()`, `readonly()`, `attributes()` / `attribute()`, `meta()`.
 
-Select and radio: `options(['admin' => 'Admin'])` or `[['value' => 'admin', 'label' => 'Admin']]`. File: `accept()`, `multiple()`. Number: `min()`, `max()`, `step()`.
+Select, radio, combobox, and checkbox group: `options(['admin' => 'Admin'])` or `[['value' => 'admin', 'label' => 'Admin']]`. File: `accept()`, `multiple()`. Number and slider: `min()`, `max()`, `step()`. Slug: `from('title')`. OTP: `length(6)`. Repeater: `fields([...])`. Blocks: `blocks(['hero' => ['label' => 'Hero', 'fields' => [...]]])`. Display: `variant('heading')`, `variant('paragraph')`, or `variant('divider')`. Toggle uses the same checked values as a checkbox and renders `role="switch"`. A `SubmitField` replaces the form's default submit button. Composer is a plain textarea. Rich text is a `contenteditable` with bold and italic only.
 
 ### Values, nulls, and models
 
@@ -87,7 +87,7 @@ Highest priority wins:
 2. `Form::make($model)` / `fill($source)` (skipped for password and file unless `fillFromSource(true)`)
 3. `initialValues()`
 4. Field `default()`
-5. Type default (`''`, `false` for checkbox, `null` for number/date/file)
+5. Type default (`''`, `false` for checkbox and toggle, `[]` for checkbox group, repeater, blocks, and key-value, `null` for number/date/time/slider/file, `#000000` for color)
 
 `null` is kept as JSON `null`. A missing key falls through. An empty string is a real value. Nested names such as `address.city` become nested objects in `values` and `address[city]` in HTML.
 
