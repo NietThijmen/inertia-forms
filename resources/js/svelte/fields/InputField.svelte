@@ -1,15 +1,30 @@
 <script lang="ts">
-	import { asRecord, inputValue } from '../../core';
+	import { asRecord, colorValue, inputValue } from '../../core';
 	import type { FieldProps } from '../types';
 	import FieldShell from '../FieldShell.svelte';
 
 	let { field, value, errors, processing, formId }: FieldProps = $props();
 
-	let htmlType = $derived(
-		field.type === 'email' || field.type === 'password' || field.type === 'number' || field.type === 'date'
-			? field.type
-			: 'text',
+	let htmlType = $derived(nativeHtmlType(field.type));
+	let controlValue = $derived(
+		htmlType === 'password' ? '' : htmlType === 'color' ? colorValue(value) : inputValue(value),
 	);
+
+	function nativeHtmlType(type: string): string {
+		switch (type) {
+			case 'email':
+			case 'password':
+			case 'number':
+			case 'date':
+			case 'time':
+			case 'color':
+				return type;
+			case 'link':
+				return 'url';
+			default:
+				return 'text';
+		}
+	}
 </script>
 
 <FieldShell {field} {formId} {errors}>
@@ -18,7 +33,7 @@
 			type={htmlType}
 			{id}
 			name={field.htmlName}
-			value={htmlType === 'password' ? '' : inputValue(value)}
+			value={controlValue}
 			placeholder={field.placeholder ?? undefined}
 			required={field.required}
 			disabled={field.disabled || processing}

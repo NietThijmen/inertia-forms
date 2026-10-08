@@ -2,7 +2,7 @@
 	import { Form as InertiaForm } from '@inertiajs/svelte';
 	import type { Snippet } from 'svelte';
 	import type { FieldPayload, FormPayload, JsonValue } from '../contract';
-	import { getValue } from '../core';
+	import { getValue, hasSubmitField } from '../core';
 	import Field from './Field.svelte';
 	import type { FieldRendererMap, FormRenderContext, InertiaFormState } from './types';
 
@@ -29,6 +29,7 @@
 	}: Props = $props();
 
 	let mergedRenderers = $derived({ ...renderers, ...components });
+	let showDefaultSubmit = $derived(!hasSubmitField(payload.fields));
 
 	type InertiaMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
@@ -83,9 +84,11 @@
 				{/if}
 			{/each}
 
-			<button type="submit" disabled={formState.processing}>
-				{formState.processing ? 'Submitting…' : submitLabel}
-			</button>
+			{#if showDefaultSubmit}
+				<button type="submit" disabled={formState.processing}>
+					{formState.processing ? 'Submitting…' : submitLabel}
+				</button>
+			{/if}
 
 			{#if formState.wasSuccessful}
 				<p class="if-status" data-inertia-form-success="">Saved.</p>

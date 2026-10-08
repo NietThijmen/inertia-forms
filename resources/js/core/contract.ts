@@ -12,6 +12,12 @@ export type FieldOption = {
 	disabled: boolean;
 };
 
+export type BlockDefinition = {
+	type: string;
+	label: string;
+	fields: FieldPayload[];
+};
+
 export type FieldPayload = {
 	name: string;
 	htmlName: string;
@@ -27,6 +33,16 @@ export type FieldPayload = {
 	options?: FieldOption[];
 	multiple?: boolean;
 	accept?: string | null;
+	/** Child field payloads for `repeater`. */
+	fields?: FieldPayload[];
+	/** Block definitions for `blocks`. */
+	blocks?: BlockDefinition[];
+	/** Character count for `otp`. */
+	length?: number;
+	/** `heading`, `paragraph`, or `divider` for `display`. */
+	variant?: string;
+	/** Sibling field name mirrored by `slug` until the slug is edited. */
+	from?: string | null;
 };
 
 export type FormPayload = {
@@ -64,4 +80,9 @@ export const FIELD_PAYLOAD_KEYS = [
 	'options',
 	'multiple',
 	'accept',
+	'fields',
+	'blocks',
+	'length',
+	'variant',
+	'from',
 ] as const;

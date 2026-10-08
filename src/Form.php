@@ -314,9 +314,11 @@ abstract class Form implements Arrayable, JsonSerializable
         }
 
         if ($value instanceof DateTimeInterface) {
-            return $field->type() === 'date'
-                ? $value->format('Y-m-d')
-                : $value->format('Y-m-d\TH:i');
+            return match ($field->type()) {
+                'date' => $value->format('Y-m-d'),
+                'time' => $value->format('H:i'),
+                default => $value->format('Y-m-d\TH:i'),
+            };
         }
 
         if ($value instanceof BackedEnum) {
@@ -335,9 +337,12 @@ abstract class Form implements Arrayable, JsonSerializable
     protected function typeDefault(Field $field): mixed
     {
         return match ($field->type()) {
-            'checkbox' => false,
-            'file', 'number', 'date' => null,
+            'checkbox', 'toggle' => false,
+            'file', 'number', 'date', 'time', 'slider' => null,
             'select' => $field->isMultiple() ? [] : '',
+            'checkbox-group', 'repeater', 'blocks', 'key-value' => [],
+            'color' => '#000000',
+            'display', 'submit' => null,
             default => '',
         };
     }

@@ -1,11 +1,11 @@
-import type { FieldProps } from '../core';
+import type { ComponentMap, FieldProps } from '../core';
 import type { FormPayload } from '../contract';
 
 export type { FieldProps };
 
 export type FieldRenderContext = FieldProps;
 
-export type FieldRenderer = (context: FieldProps) => HTMLElement;
+export type FieldRenderer = (context: FieldProps, overrides?: ComponentMap<FieldRenderer>) => HTMLElement;
 
 export type RouterLike = {
 	visit: (
