@@ -48,6 +48,18 @@ describe('classic field types', () => {
 						fields: [field({ name: 'title', type: 'text', label: 'Item title' })],
 					}),
 					field({
+						name: 'sections',
+						type: 'blocks',
+						label: 'Sections',
+						blocks: [
+							{
+								type: 'hero',
+								label: 'Hero',
+								fields: [field({ name: 'headline', type: 'text', label: 'Headline' })],
+							},
+						],
+					}),
+					field({
 						name: 'meta',
 						type: 'key-value',
 						label: 'Meta',
@@ -75,6 +87,7 @@ describe('classic field types', () => {
 					note: 'Plain',
 					body: 'Rich',
 					items: [{ title: 'First' }],
+					sections: [{ type: 'hero', data: { headline: 'Hi' } }],
 					meta: [{ key: 'a', value: 'b' }],
 				},
 			),
@@ -104,6 +117,8 @@ describe('classic field types', () => {
 		expect(root.querySelector('input[name="body"]')).toHaveAttribute('type', 'hidden');
 		expect(root.querySelector('input[name="items[0][title]"]')).toHaveValue('First');
 		expect(root.querySelectorAll('[data-repeater-row]')).toHaveLength(1);
+		expect(root.querySelector('input[name="sections[0][type]"]')).toHaveValue('hero');
+		expect(root.querySelector('input[name="sections[0][data][headline]"]')).toHaveValue('Hi');
 		expect(root.querySelector('input[name="meta[0][key]"]')).toHaveValue('a');
 		expect(root.querySelector('input[name="meta[0][value]"]')).toHaveValue('b');
 		expect(root.querySelector('[data-type="display"][data-variant="heading"] h3')).toHaveTextContent('Hello');

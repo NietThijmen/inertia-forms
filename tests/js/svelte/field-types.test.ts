@@ -56,6 +56,18 @@ describe('svelte field types', () => {
 					label: 'Items',
 					fields: [field({ name: 'title', type: 'text', label: 'Item title' })],
 				}),
+				field({
+					name: 'sections',
+					type: 'blocks',
+					label: 'Sections',
+					blocks: [
+						{
+							type: 'hero',
+							label: 'Hero',
+							fields: [field({ name: 'headline', type: 'text', label: 'Headline' })],
+						},
+					],
+				}),
 				field({ name: 'meta', type: 'key-value', label: 'Meta' }),
 				field({ name: 'intro', type: 'display', label: 'Hello', description: 'World', variant: 'heading' }),
 				field({ name: 'save', type: 'submit', label: 'Save' }),
@@ -74,6 +86,7 @@ describe('svelte field types', () => {
 				note: 'Plain',
 				body: 'Rich',
 				items: [{ title: 'First' }],
+				sections: [{ type: 'hero', data: { headline: 'Hi' } }],
 				meta: [{ key: 'a', value: 'b' }],
 			},
 		);
@@ -101,6 +114,8 @@ describe('svelte field types', () => {
 		expect(container.querySelector('input[type="hidden"][name="body"]')).not.toBeNull();
 		expect(container.querySelector('input[name="items[0][title]"]')).toHaveValue('First');
 		expect(container.querySelectorAll('[data-repeater-row]')).toHaveLength(1);
+		expect(container.querySelector('input[name="sections[0][type]"]')).toHaveValue('hero');
+		expect(container.querySelector('input[name="sections[0][data][headline]"]')).toHaveValue('Hi');
 		expect(container.querySelector('input[name="meta[0][key]"]')).toHaveValue('a');
 		expect(container.querySelector('input[name="meta[0][value]"]')).toHaveValue('b');
 		expect(container.querySelector('[data-variant="heading"] h3')).toHaveTextContent('Hello');
