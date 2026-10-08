@@ -1,0 +1,66 @@
+body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.if-field {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 0.9rem;
+}
+
+.if-field label {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.if-field input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font: inherit;
+    background: #fff;
+}
+
+.if-form-description {
+    margin: -0.25rem 0 1rem;
+    color: #4b5563;
+    font-size: 0.9rem;
+}
+
+.if-error {
+    margin: 0;
+    color: #b91c1c;
+    font-size: 0.875rem;
+}
+
+.if-status {
+    display: none;
+}
+
+form h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.5rem;
+    line-height: 1.2;
+}
+
+form button[type='submit'] {
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.65rem 0.8rem;
+    border: 0;
+    border-radius: 8px;
+    background: #111827;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+}
+
+form button[type='submit']:disabled {
+    cursor: wait;
+    opacity: 0.6;
+}
