@@ -1,0 +1,212 @@
+{
+    "id": "profile-form",
+    "action": "/profile",
+    "method": "PUT",
+    "title": "Profile",
+    "description": "Update your profile",
+    "fields": [
+        {
+            "name": "name",
+            "htmlName": "name",
+            "type": "text",
+            "label": "Name",
+            "description": null,
+            "placeholder": "Jane Doe",
+            "required": true,
+            "disabled": false,
+            "readonly": false,
+            "attributes": [],
+            "meta": []
+        },
+        {
+            "name": "email",
+            "htmlName": "email",
+            "type": "email",
+            "label": "Email",
+            "description": "Work email",
+            "placeholder": null,
+            "required": false,
+            "disabled": false,
+            "readonly": false,
+            "attributes": [],
+            "meta": []
+        },
+        {
+            "name": "password",
+            "htmlName": "password",
+            "type": "password",
+            "label": "Password",
+            "description": null,
+            "placeholder": null,
+            "required": false,
+            "disabled": false,
+            "readonly": false,
+            "attributes": [],
+            "meta": []
+        },
+        {
+            "name": "age",
+            "htmlName": "age",
+            "type": "number",
+            "label": "Age",
+            "description": null,
+            "placeholder": null,
+            "required": false,
+            "disabled": false,
+            "readonly": false,
+            "attributes": {
+                "min": 0
+            },
+            "meta": []
+        },
+        {
+            "name": "birthday",
+            "htmlName": "birthday",
+            "type": "date",
+            "label": "Birthday",
+            "description": null,
+            "placeholder": null,
+            "required": false,
+            "disabled": false,
+            "readonly": false,
+            "attributes": [],
+            "meta": []
+        },
+        {
+            "name": "bio",
+            "htmlName": "bio",
+            "type": "textarea",
+            "label": "Bio",
+            "description": null,
+            "placeholder": null,
+            "required": false,
+            "disabled": false,
+            "readonly": false,
+            "attributes": {
+                "rows": 4
+            },
+            "meta": []
+        },
+        {
+            "name": "subscribe",
+            "htmlName": "subscribe",
+            "type": "checkbox",
+            "label": "Subscribe",
+            "description": null,
+            "placeholder": null,
+            "required": false,
+            "disabled": false,
+            "readonly": false,
+            "attributes": [],
+            "meta": []
+        },
+        {
+            "name": "role",
+            "htmlName": "role",
+            "type": "select",
+            "label": "Role",
+            "description": null,
+            "placeholder": null,
+            "required": false,
+            "disabled": false,
+            "readonly": false,
+            "attributes": [],
+            "meta": [],
+            "options": [
+                {
+                    "value": "admin",
+                    "label": "Admin",
+                    "disabled": false
+                },
+                {
+                    "value": "user",
+                    "label": "User",
+                    "disabled": false
+                }
+            ],
+            "multiple": false
+        },
+        {
+            "name": "color",
+            "htmlName": "color",
+            "type": "radio",
+            "label": "Color",
+            "description": null,
+            "placeholder": null,
+            "required": false,
+            "disabled": false,
+            "readonly": false,
+            "attributes": [],
+            "meta": [],
+            "options": [
+                {
+                    "value": "red",
+                    "label": "Red",
+                    "disabled": false
+                },
+                {
+                    "value": "blue",
+                    "label": "Blue",
+                    "disabled": false
+                }
+            ]
+        },
+        {
+            "name": "avatar",
+            "htmlName": "avatar",
+            "type": "file",
+            "label": "Avatar",
+            "description": null,
+            "placeholder": null,
+            "required": false,
+            "disabled": false,
+            "readonly": false,
+            "attributes": [],
+            "meta": [],
+            "multiple": false,
+            "accept": "image/*"
+        },
+        {
+            "name": "address.city",
+            "htmlName": "address[city]",
+            "type": "text",
+            "label": "City",
+            "description": null,
+            "placeholder": null,
+            "required": false,
+            "disabled": false,
+            "readonly": false,
+            "attributes": [],
+            "meta": []
+        },
+        {
+            "name": "address.country",
+            "htmlName": "address[country]",
+            "type": "text",
+            "label": "Country",
+            "description": null,
+            "placeholder": null,
+            "required": false,
+            "disabled": false,
+            "readonly": false,
+            "attributes": [],
+            "meta": []
+        }
+    ],
+    "values": {
+        "name": "",
+        "email": "jane@example.com",
+        "password": "",
+        "age": null,
+        "birthday": null,
+        "bio": "",
+        "subscribe": true,
+        "role": "",
+        "color": "",
+        "avatar": null,
+        "address": {
+            "city": "Amsterdam",
+            "country": "NL"
+        }
+    }
+}

@@ -1,0 +1,59 @@
+{
+    "name": "nietthijmen/inertia-forms",
+    "description": "Class-based Laravel forms serialized into a shared JSON contract for Classic and Svelte Inertia adapters.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "inertia",
+        "forms",
+        "svelte"
+    ],
+    "require": {
+        "php": "^8.3",
+        "illuminate/auth": "^12.0 || ^13.0",
+        "illuminate/http": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0",
+        "illuminate/validation": "^12.0 || ^13.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.18",
+        "orchestra/testbench": "^10.0 || ^11.0",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5"
+    },
+    "suggest": {
+        "inertiajs/inertia-laravel": "Pass Form::toInertia() payloads to Inertia pages."
+    },
+    "autoload": {
+        "psr-4": {
+            "NietThijmen\\InertiaForms\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NietThijmen\\InertiaForms\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "NietThijmen\\InertiaForms\\InertiaFormsServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "lint": "pint --test",
+        "fix": "pint",
+        "analyse": "phpstan analyse --memory-limit=1G"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": false
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

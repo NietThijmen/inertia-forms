@@ -1,0 +1,77 @@
+{
+    "name": "@nietthijmen/inertia-forms",
+    "version": "0.1.0",
+    "description": "Classic and Svelte adapters for class-based Laravel Inertia forms.",
+    "type": "module",
+    "license": "MIT",
+    "exports": {
+        "./contract": {
+            "types": "./resources/js/contract.ts",
+            "import": "./resources/js/contract.ts",
+            "default": "./resources/js/contract.ts"
+        },
+        "./classic": {
+            "types": "./resources/js/classic/index.ts",
+            "import": "./resources/js/classic/index.ts",
+            "default": "./resources/js/classic/index.ts"
+        },
+        "./svelte": {
+            "types": "./resources/js/svelte/index.ts",
+            "svelte": "./resources/js/svelte/index.ts",
+            "import": "./resources/js/svelte/index.ts",
+            "default": "./resources/js/svelte/index.ts"
+        }
+    },
+    "files": [
+        "resources/js",
+        "src",
+        "config",
+        "docs",
+        "LICENSE",
+        "README.md"
+    ],
+    "typesVersions": {
+        ">4.0": {
+            "classic": [
+                "resources/js/classic/index.ts"
+            ],
+            "svelte": [
+                "resources/js/svelte/index.ts"
+            ],
+            "contract": [
+                "resources/js/contract.ts"
+            ]
+        }
+    },
+    "peerDependencies": {
+        "@inertiajs/svelte": "^2.0.0 || ^3.0.0",
+        "svelte": "^5.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@inertiajs/svelte": {
+            "optional": true
+        },
+        "svelte": {
+            "optional": true
+        }
+    },
+    "scripts": {
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "typecheck": "tsc --noEmit -p tsconfig.json && svelte-check --tsconfig tsconfig.json --config ./svelte.config.js",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@inertiajs/svelte": "^3.0.3",
+        "@sveltejs/vite-plugin-svelte": "^5.1.0",
+        "@testing-library/jest-dom": "^6.6.0",
+        "@testing-library/svelte": "^5.2.0",
+        "@types/node": "^22.13.0",
+        "jsdom": "^26.0.0",
+        "svelte": "^5.34.0",
+        "svelte-check": "^4.2.0",
+        "typescript": "^5.8.0",
+        "vite": "^6.3.0",
+        "vitest": "^3.2.0"
+    }
+}
