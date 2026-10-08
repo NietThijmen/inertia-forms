@@ -24,7 +24,7 @@ No other form-level keys are serialized.
 | --- | --- | --- |
 | `name` | `string` | Laravel dotted name, e.g. `address.city`. |
 | `htmlName` | `string` | HTML name, e.g. `address[city]`. |
-| `type` | `string` | Renderer hint: `text`, `email`, `password`, `number`, `date`, `textarea`, `checkbox`, `select`, `radio`, `file`, or a custom type. |
+| `type` | `string` | Renderer hint. Built-ins: `text`, `email`, `password`, `number`, `date`, `textarea`, `checkbox`, `select`, `radio`, `file`, `slug`, `link`, `hidden`, `otp`, `combobox`, `checkbox-group`, `toggle`, `time`, `color`, `slider`, `composer`, `rich-text`, `repeater`, `blocks`, `key-value`, `display`, `submit`, or a custom type. |
 | `label` | `string \| null` | Accessible label. |
 | `description` | `string \| null` | Help text. |
 | `placeholder` | `string \| null` | Placeholder hint. |
@@ -33,9 +33,17 @@ No other form-level keys are serialized.
 | `readonly` | `boolean` | Read-only for supported controls. |
 | `attributes` | `object` | Scalar HTML attributes. Event handlers and `javascript:` URLs are stripped. |
 | `meta` | `object` | JSON-safe extra presentation data. |
-| `options` | `array` | Present for `select` and `radio`: `{ value, label, disabled }`. |
+| `options` | `array` | Present for `select`, `radio`, `combobox`, and `checkbox-group`: `{ value, label, disabled }`. |
 | `multiple` | `boolean` | Present for `select` and `file` when relevant. |
 | `accept` | `string \| null` | Present for `file`. |
+| `from` | `string \| null` | Present for `slug`. Sibling field name. Renderers copy a slugified value from that field until the slug input is edited. |
+| `length` | `number` | Present for `otp`. Number of single-character boxes. Defaults to 6. The group submits one string. |
+| `fields` | `Field[]` | Present for `repeater`. Child field payloads, including their own extra keys. Rules are not included. |
+| `blocks` | `array` | Present for `blocks`: `{ type, label, fields }`. `fields` is the same child field payload as `repeater`. |
+| `variant` | `string` | Present for `display`: `heading`, `paragraph`, or `divider`. |
+| `attributes.min` | scalar | Present for `number` and `slider` when `min()` was called. |
+| `attributes.max` | scalar | Present for `number` and `slider` when `max()` was called. |
+| `attributes.step` | scalar | Present for `number` and `slider` when `step()` was called. |
 
 Never present: Laravel rules, closures, authorization logic, the backing model, secrets, or PHP objects.
 
@@ -47,7 +55,7 @@ Priority, highest first:
 2. `fill($source)` / `Form::make($source)` for fields with `fillFromSource()` (off by default for password and file)
 3. `initialValues()`
 4. Field `default()`
-5. Type default: `''` for text-like fields, `false` for checkbox, `[]` for multi-select, `null` for number, date, and file
+5. Type default: `''` for text-like fields, `false` for checkbox and toggle, `[]` for multi-select, checkbox group, repeater, blocks, and key-value, `null` for number, date, time, slider, file, display, and submit, `#000000` for color
 
 Rules:
 
@@ -56,7 +64,11 @@ Rules:
 - Empty strings are values, not missing keys.
 - File values are always `null` in the payload. Put a display name in `meta.current` if needed.
 - Nested names become nested objects (`address.city` → `values.address.city`).
-- DateTime values become `Y-m-d` for `date` fields.
+- DateTime values become `Y-m-d` for `date` fields and `H:i` for `time` fields.
+- Repeater values are lists of objects keyed by child field names. Blocks values are lists of `{ type, data }`. Key-value values are lists of `{ key, value }`.
+- `checkbox-group` values are string arrays. Its `htmlName` is the field's array name (`tags` → `tags[]`).
+- `display` is presentational and has no named control. `hidden` is a named hidden input without a label, help, or error shell.
+- `submit` renders the button from `label` (default `Submit`). When any field has type `submit`, adapters omit the form-level default submit button.
 
 ## Frontend submission
 

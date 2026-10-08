@@ -1,5 +1,5 @@
 import type { FormPayload } from '../contract';
-import { errorList, fieldDomId, getValue, setValue, type FieldProps } from '../core';
+import { errorList, fieldDomId, getValue, hasSubmitField, setValue, type FieldProps } from '../core';
 import { defaultRenderers, renderField } from './fields';
 import { applyCsrfToken, applyNativeMethod, resolveRouter, submitWithInertia } from './submit';
 import type { ClassicFormHandle, FieldRenderer, MountClassicFormOptions } from './types';
@@ -65,10 +65,13 @@ export function mountClassicForm(
 	status.hidden = true;
 	form.appendChild(status);
 
-	const submit = document.createElement('button');
-	submit.type = 'submit';
-	submit.textContent = options.submitLabel ?? 'Submit';
-	form.appendChild(submit);
+	const submit = hasSubmitField(payload.fields) ? null : document.createElement('button');
+
+	if (submit) {
+		submit.type = 'submit';
+		submit.textContent = options.submitLabel ?? 'Submit';
+		form.appendChild(submit);
+	}
 
 	target.replaceChildren(form);
 
@@ -114,12 +117,20 @@ export function mountClassicForm(
 
 	const applyProcessing = (value: boolean): void => {
 		processing = value;
-		submit.disabled = value;
-		submit.textContent = value ? 'Submitting…' : (options.submitLabel ?? 'Submit');
-		form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+
+		if (submit) {
+			submit.disabled = value;
+			submit.textContent = value ? 'Submitting…' : (options.submitLabel ?? 'Submit');
+		}
+
+		form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLButtonElement>(
 			'input:not([type="hidden"]), select, textarea, button[type="submit"]',
 		).forEach((element) => {
 			element.disabled = value;
+		});
+		form.querySelectorAll<HTMLElement>('[contenteditable]').forEach((element) => {
+			const readonly = element.dataset.readonly === 'true';
+			element.setAttribute('contenteditable', value || readonly ? 'false' : 'true');
 		});
 	};
 
