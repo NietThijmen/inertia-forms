@@ -283,6 +283,10 @@ Register a Classic renderer or Svelte component for `color`. Extra presentation 
 - Custom field types need a matching frontend renderer or they fall back to a text input.
 - Compatible with Laravel 12–13, Inertia 2–3, Svelte 5. Older stacks are untested.
 
+## Demo
+
+[`demo/`](demo/README.md) is a small Laravel, Inertia, and Svelte app with one sign-in screen. It consumes this package through a Composer path repository and an npm `file:` link.
+
 ## Development
 
 ```bash
